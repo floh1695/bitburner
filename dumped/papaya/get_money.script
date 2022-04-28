@@ -1,0 +1,20 @@
+var target = args[0];
+print(target);
+
+try
+{
+	while(true)
+	{
+		var rv = hack(target);
+		print(rv);
+		if(rv == 0)
+		{
+			weaken(target);
+		}
+		else
+		{
+		grow(target);
+		}
+	}
+}
+finally{}

@@ -1,0 +1,63 @@
+var hosts = ["n00dles", "zer0", "neo-net", "phantasy", "omega-net", "nectar-net", "silver-helix", "CSEC", "foodnstuff", "max-hardware", "sigma-cosmetics", "joesguns", "hong-fang-tea", "harakiri-sushi", "iron-gym","darkweb"];
+//var target = args[0];
+//print(target);
+var n = nuke;
+var mylevel = getHackingLevel();
+var ports = 0;
+if (fileExists("BruteSSH.exe")) {
+	ports += 1;
+}
+if (fileExists("FTPCrack.exe")) {
+	ports += 1;
+}
+tprint("my level: " + mylevel.toString());
+tprint("openable ports: " + ports.toString());
+for (var i in hosts) {
+	var target = hosts[i];
+	tprint(target);
+	var servLevel = getServerRequiredHackingLevel(target);
+	if (servLevel > mylevel) {
+		tprint("level too high (" + servLevel.toString() + ")");
+		continue;
+	}
+	if (getServerNumPortsRequired(target) > ports) {
+		tprint("ports too high (" + getServerNumPortsRequired(target) + ")");
+		continue;
+	}
+	if (hasRootAccess(target)) {
+		tprint("hacked... skipping");
+		continue;
+	}
+	try {
+		if (fileExists("BruteSSH.exe")) {
+			tprint("ssh...");
+			brutessh(target);
+		}
+		if (fileExists("FTPCrack.exe")) {
+			tprint("ftp...");
+			ftpcrack(target);
+		}
+		tprint("nuke...");
+		nuke(target);
+		//tprint("bd...");
+		//installBackdoor(target);
+		tprint("load...");
+		scp("get_money.script", target);
+		tprintf("run... ");
+		var targetn00dles = getServerMaxMoney(target) == 0;
+		var instances = getServerMaxRam(target)/2;
+		for (var i = 0; i < instances; i++) {
+			tprintf(".");
+			if(targetn00dles)
+			{
+				exec("get_money.script", target, numThreads = 1, "n00dles", i.toString());
+			}
+			else
+			{
+				exec("get_money.script", target, numThreads = 1, target, i.toString());
+			}
+		}
+	}
+	finally { }
+}
+
